@@ -7,4 +7,5 @@ Each device features a screen on top and communicates using infrared recievers a
 
 The layout of these devices will be entirely changable, effectively altering the shape of the combined screen.
 
+
 ![111](https://user-images.githubusercontent.com/73670487/152220491-57086dea-c8e4-4376-afe2-5188e711934d.jpg)
