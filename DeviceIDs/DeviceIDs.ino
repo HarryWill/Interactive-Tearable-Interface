@@ -40,7 +40,7 @@ int* IDCheck() {
         Serial.println(results.value, HEX);
       }
 
-      IDarray[i] = i;       //Add result to ID array
+      IDarray[i] = results.value; //Add ID to array
       irrecvs[i]->resume(); //Resume searching for IDs
     }
   }
