@@ -9,85 +9,77 @@ decode_results results;
 void setup() {
   Serial.begin(9600);
 
-  String columnStr = "";
-  String rowStr = "";
-
-  irrecvs[0] = new IRrecv(2); // Receiver #0: pin 2
-  irrecvs[1] = new IRrecv(3); // Receiver #1: pin 3
-  irrecvs[2] = new IRrecv(4); // Receiver #2: pin 4
-  irrecvs[3] = new IRrecv(5); // Receiver #3: pin 5
+  irrecvs[0] = new IRrecv(2); // Up Sensor: pin 2
+  irrecvs[1] = new IRrecv(3); // Right Sensor: pin 3
+  irrecvs[2] = new IRrecv(4); // Down Sensor: pin 4
+  irrecvs[3] = new IRrecv(5); // Left Sensor: pin 5
 
   for (int i = 0; i < RECEIVERS; i++)
-    irrecvs[i]->enableIRIn();
+    irrecvs[i]->enableIRIn(); //Start recievers
 }
 
-int** IDCheck() {
-  int** IDarray ={};
+int* IDCheck() {
+  int IDarray[4] = {};
 
   for (int i = 0; i < 4; i++) {
-    if (irrecvs[i]->decode(&results)) {
-      //Make string that holds ID and the sensor it came from. Return array of these strings.
+    if (irrecvs[i]->decode(&results)) {   //If reciever detects result,
+      if (i == 0) {
+        Serial.print("Up Sensor: ");      //Print sensor direction
+        Serial.println(results.value, HEX); //Print result
+      }
+      else if (i == 1) {
+        Serial.print("Right Sensor: ");
+        Serial.println(results.value, HEX);
+      }
+      else if (i == 2) {
+        Serial.print("Down Sensor: ");
+        Serial.println(results.value, HEX);
+      }
+      else if (i == 3) {
+        Serial.print("Left Sensor: ");
+        Serial.println(results.value, HEX);
+      }
 
-      Serial.print("Receiver #");
-      Serial.print(i);
-      Serial.print(":");
-      Serial.println(results.value, HEX);
-      irrecvs[i]->resume();
-
-      IDarray[0][i] = i;
-      IDarray[1][i] = results.value;
+      IDarray[i] = i;       //Add result to ID array
+      irrecvs[i]->resume(); //Resume searching for IDs
     }
-
   }
   return IDarray;
 }
 
 
-
 void loop() {
 
-  int IDs = IDCheck();
+  int* IDs = IDCheck();   //Check for IDs
 
-  int column = 0;
-  int row = 0;
+  if ((IDs[0] == 0) && (IDs[3] == 0) && (IDs[1] != 0) && (IDs[2] != 0)) { //If no neighbors above or to left,
+    deviceID == 00000001;                                                 //Become cube 1
 
+  } else {
 
-  //if ((upsensor == null) && (leftsensor == null)) {
-  //  deviceID == "0x00000001";
+    for (int i = 0; i == 11; i++) {   //Loop through columns
+      for (int x = 0; x == 11; x++) { //Loop through rows
 
-  //} else
-  if ((IDs/*upsensorvalue*/ != "0" /*null*/) && (IDs /*leftsensorvalue*/ != "0" /*null*/)) {
-
-    for (int i = 0; i == 35; i++) {
-      String columnStr = String((column + 1));
-
-      for (int x = 0; x == 11; x++) {
-        String rowStr = String((column + 1));
-
-        if (IDs /*upsensorvalue*/ == "0x000000+column+row") {
-          deviceID == "000000+column+rowStr";
+        if (IDs[0] == (000000 + (i * 10) + x)) { //Checks up for cube ID
+          deviceID == (000000 + (i * 10) + x + 1); //Save new ID (add 1 to row)
         }
 
-        if (IDs /*leftsensorvalue*/ == "0x000000+column+row") {
-          deviceID == "000000+columnStr+row";
+        if (IDs[3] == (000000 + (i * 10) + x)) { //Checks left for cube ID
+          deviceID == (000000 + (i * 10 + 1) + x); //Save new ID (add 1 to column)
         }
-
-        column++;
-        row++;
       }
     }
   }
 
-  if (deviceID != 00000000) {
-    sendID(deviceID);
+  if (deviceID != 00000000) { //If no errors or neighbours,
+    sendID(deviceID);         //Pass device ID
   }
 }
 
 void sendID(int ID) {
-  String strID = "0x" + String(deviceID);
 
   while (true) { /*changedID == false*/
-    sender.sendNEC("0x" + ID, 32);
+    sender.sendNEC("0x" + ID, 32); //Broadcast cube ID
     //changedID variable check
     delay(500);
   }
