@@ -1,7 +1,7 @@
 # Welcome!
 This repository contains the code and libraries used in the creation of my final year univeristy prototype.
 
-I'm currently developing six, interactive devices inorder to study responses to reconfigurable, interactive interfaces.
+I'm currently developing six, interactive devices to study user responses to reconfigurable interfaces.
 
 Each device features a screen, an Arduino and four infrared recievers and transmitters for communication.
 
