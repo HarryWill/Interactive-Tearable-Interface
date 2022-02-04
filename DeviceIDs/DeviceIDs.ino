@@ -64,19 +64,19 @@ void assignIDs(int IDs[4]) {
     sendID(deviceID);
 
   } else {
-    for (int i = 1; i < 13; i++) {              //Loop through columns
-      for (int x = 1; x < 13; x++) {            //Loop through rows
+    for (int i = 1; i < 13; i++) {                  //Loop through columns
+      for (int x = 1; x < 13; x++) {                //Loop through rows
         
-        if ((IDs[0] == i) && (IDs[3] == x)) {   //Checks above and to left
-          deviceID = String(i+1) + String(x);   //Position = {i+1, x}. Cube above so increment row.
+        if ((IDs[0] == i) && (IDs[3] == x)) {       //Checks above and to left
+          deviceID = String(i+1) + String(x);       //Position = {i+1, x}. Cube above so increment row.
           delay(1000);
           
         } else if ((IDs[0] == 0) && (IDs[3]== x)){
-          deviceID = String(x+1) + String(1);  //Position = {x+1, 1}. None above, 1 on left so increment column.
+          deviceID = String(x+1) + String(1);       //Position = {x+1, 1}. None above, 1 on left so increment column.
           delay(1000);
           
         } else if ((IDs[3] == 0) && (IDs[0] == i)){
-          deviceID = String(i+1) + String(1);  //Position = {i+1, 1}. None left, 1 above so increment row.
+          deviceID = String(i+1) + String(1);       //Position = {i+1, 1}. None left, 1 above so increment row.
           delay(1000);
         }
       }
