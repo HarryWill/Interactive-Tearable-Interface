@@ -3,7 +3,7 @@ This repository contains the code and libraries used in the creation of my final
 
 I'm currently developing six, interactive devices inorder to study responses to reconfigurable, interactive interfaces.
 
-Each device features a screen, arduino and infrared recievers and transmitters for communication.
+Each device features a screen, an Arduino and four infrared recievers and transmitters for communication.
 
 The layout of these devices will be entirely changable, effectively altering the shape of the combined screen on top.
 
