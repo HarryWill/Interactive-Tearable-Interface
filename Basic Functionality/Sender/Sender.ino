@@ -7,6 +7,6 @@ void setup() {
 }
 
 void loop() {
-  sender.sendNEC(0x11111111, 32);
+  sender.sendNEC(0x1, 32);
   delay(500);
 }
