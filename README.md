@@ -1,5 +1,5 @@
 # Welcome!
-This repository contains the code and libraries used in the creation of my final year univeristy prototypes.
+This repository contains the code and libraries used in the creation of my final year univeristy prototype.
 
 I'm currently developing six, interactive devices inorder to study responses to reconfigurable, interactive interfaces.
 
