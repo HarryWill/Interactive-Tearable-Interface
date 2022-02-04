@@ -8,3 +8,12 @@ Each device features a screen, an Arduino and four infrared recievers and transm
 The layout of these devices will be entirely changable, effectively altering the shape of the combined screen on top.
 
 I'm currently writting a variety of programs to demonstrate the functionality of my prototypes!
+
+TODO:
+- Fix issue of U shape arrangement, which device will be device 1?
+- Test sending and recieving with multiple devices
+- CAD housings for 3D printing
+- Limit range of infrared transmitters
+- Wiring on "wall" prototype
+- Sending logic, transmit ID for set time or wait for change in incoming IDs? (potential issues)
+- Prevent incorrect IDs from being saved to array e.g. 0xFFFFFFFF
