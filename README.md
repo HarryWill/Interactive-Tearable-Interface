@@ -14,6 +14,6 @@ TODO:
 - Test sending and recieving with multiple devices
 - CAD housings for 3D printing
 - Limit range of infrared transmitters
-- Wiring on "wall" prototype
 - Sending logic, transmit ID for set time or wait for change in incoming IDs? (potential issues)
 - Prevent incorrect IDs from being saved to array e.g. 0xFFFFFFFF
+- MathsGame improvements
