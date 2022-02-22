@@ -13,8 +13,10 @@ IRsend sender;
 IRrecv *irrecvs[RECEIVERS];
 decode_results results;
 
-int IDarray[4] = {};
 String deviceID = "0";
+int IDarray[4] = {};
+int partInEquation = 0;
+
 int availableSigns[5] = {"+", "-", "*", "/", "."};
 int numbers[3] = {};
 int signs[2] = {};
@@ -23,7 +25,8 @@ int solution = 0;
 
 boolean assignedID = false;
 boolean assignedMath = false;
-int partInEquation = 0;
+
+
 
 void setup() {
   Serial.begin(115200);
@@ -75,7 +78,6 @@ void IDCheck() {
         irrecvs[i]->enableIRIn();   //Resume checking for IDs
       }
     } else {
-
       if (irrecvs[i]->decode(&results)) {
         if (i == 3) {
           Serial.print("Equation: ");
@@ -261,19 +263,15 @@ void sendID(String ID) {
       delay(300);
     }
   }
-
-  //for (int y = 0; y < 4; y++) {
-  //  IDarray[y] = 0;                   //clear ID array
-  //}
-  //deviceID = "0";                     //clear device ID
 }
 
 //Broadcast equation
 void sendMath(String equation) {
-  int intEquation = equation.toInt();
+  String trimmedEquation = equation.substring(0) + equation.substring(1) + equation.substring(2) + equation.substring(3) + equation.substring(4) + equation.substring(5); 
+  int intEquation = trimmedEquation.toInt();
   
   for (int z = 0; z < 20; z++) {
-    Serial.println("SENDING EQUATION: " + equation);
+    Serial.println("SENDING EQUATION: " + trimmedEquation);
     sender.sendNEC("0x" + intEquation, 32);
     delay(300);
   }
