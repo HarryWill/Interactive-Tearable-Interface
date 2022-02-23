@@ -25,7 +25,16 @@ int solution = 0;
 
 boolean assignedID = false;
 boolean assignedMath = false;
+boolean correctRight = false;
+boolean correctLeft = false;
 
+////CODE LIST////
+
+//12345678 = NO ID
+//11-> 16||61||32 = DEVICE ID
+//000000## = ASSIGNED ID
+//1000 - 6000 = EQUATION PART
+//11111111 = CORRECT NEIGHBOURS
 
 
 void setup() {
@@ -54,7 +63,7 @@ void IDCheck() {
   }
 
   for (int i = 0; i < 4; i++) {
-    if (assignedID == false) {                  //If equation isn't being transmitted
+    if (assignedID == false && assignedMath == false) {                  //If equation isn't being transmitted         /////////Maybe swap for loops around////////////
       if (irrecvs[i]->decode(&results)) {
 
         if (i == 0) {
@@ -77,12 +86,65 @@ void IDCheck() {
         assignIDs(IDarray);
         irrecvs[i]->enableIRIn();   //Resume checking for IDs
       }
-    } else {
+    } else if (assignedID == true && assignedMath == true) {
+      if (deviceID == "32" || deviceID == "16" || deviceID == "61") {
+        //delay(5000);                                                          /////////////Delay here to give user time to find solution?////////////
+        for (int i = 0, i < 20; i++) {
+          sender.sendNEC("0x" + partInEquation, 32);
+          delay(300);
+        }
+      } else { //Checks each sensor for correct neighbour
+        if (irrecvs[i]->decode(&results)) {
+          if (partInEquation == 1000) {
+            if (i == 1 && (results.value.toInt()) == (partInEquation + 1000)) {
+              correctRight = true;
+            }
+          } else if (partInEquation == 2000) {
+            if (i == 1 && (results.value.toInt()) == (partInEquation + 1000)) {
+              correctRight = true;
+          } else if (partInEquation == 3000) {
+            if (i == 1 && (results.value.toInt()) == (partInEquation + 1000)) {
+              correctRight = true;
+          } else if (partInEquation == 4000) {
+            if (i == 1 && (results.value.toInt()) == (partInEquation + 1000)) {
+              correctRight = true;
+          } else if (partInEquation == 5000) {
+            if (i == 1 && (results.value.toInt()) == (partInEquation + 1000)) {
+              correctRight = true;
+          } else if (partInEquation == 6000) {
+            if (i == 3 && (results.value).toInt() == (partInEquation - 1000)) {
+              correctRight = true;
+            }
+          }
+        }
+      }
+    } else if (assignedID == true && assignedMath == false) {
       if (irrecvs[i]->decode(&results)) {
         if (i == 3) {
           Serial.print("Equation: ");
           Serial.println(results.value, HEX);
           equationLogic(String(results.value));
+        }
+      }
+    }
+    
+    if (correctRight == true){ //////////////////////////////////Must start with cube 2 checking to left I think. Each cubes checks left/////
+      int correctID = 11110000 + (partInEquation);
+      //congrats, correct neighbours!
+      displayText("Correct right! maybe..");
+
+      if (deviceID == "11"){
+        if (i==3 && (results.value).toInt() == (correctID - 1000)){
+          
+        }
+      }
+      if (deviceID == "21"){
+        for (int i = 0, i < 3; i++) {
+        sender.sendNEC("0x" + correctID , 32);
+        }
+      } else if (deviceID =! "11"){
+        if (i==3 && (results.value).toInt() == (correctID - 1000)){
+          sender.sendNEC("0x" + correctID , 32);
         }
       }
     }
@@ -129,13 +191,14 @@ void assignIDs(int IDs[4]) {
         delay(300);
       }
       assignedID = true;
-      
+
       //Repeats loop now listening for equation
 
     } else if (intID == 11 && IDs[1] == (11111100 + intID + 10)) { //If first cube
       //Every cube should have a (hopefully) correctly assigned ID!
       String equation = generateEquation(); //First cube creates math problem
       String total = equation.substring(6); //Find total in string
+      partInEquation = 6000;
       displayText("= " + total);
       sendMath(equation);
 
@@ -178,7 +241,7 @@ String generateEquation() {
     strNum1 = "0" + String(numbers[2]);
   }
   String equationString = strNum0 + String(signs[0]) + strNum1 + String(signs[1]) + strNum2 + String(total);
-  Serial.println("Math: " + equationString);
+  Serial.println("Equation: " + equationString);
   total = 0;
   solution = 0;
   return equationString;
@@ -192,13 +255,13 @@ void equationLogic(String equation) {
     boolean done = false;
 
     while (done == false) {
-      randomSection = random(1,6);
+      randomSection = random(1, 6);
       if (randomSection == 1) {
         section = equation.substring(0) + equation.substring(1);
         if (section = ! "00") {
           done = true;
           equation.replace(section, "00");
-          partInEquation = 1;
+          partInEquation = 1000;
         }
 
       } else if (randomSection == 2) {
@@ -206,7 +269,7 @@ void equationLogic(String equation) {
         if (section = ! "0") {
           done = true;
           equation.replace(section, "0");
-          partInEquation = 2;
+          partInEquation = 2000;
         }
 
       } else if (randomSection == 3) {
@@ -214,7 +277,7 @@ void equationLogic(String equation) {
         if (section = ! "00") {
           done = true;
           equation.replace(section, "00");
-          partInEquation = 3;
+          partInEquation = 3000;
         }
 
       } else if (randomSection == 4) {
@@ -222,7 +285,7 @@ void equationLogic(String equation) {
         if (section = ! "0") {
           done = true;
           equation.replace(section, "0");
-          partInEquation = 4;
+          partInEquation = 4000;
         }
 
       } else if (randomSection == 5) {
@@ -230,18 +293,17 @@ void equationLogic(String equation) {
         if (section = ! "00") {
           done = true;
           equation.replace(section, "00");
-          partInEquation = 5;
+          partInEquation = 5000;
         }
       }
     }
     assignedMath = true;
     displayText(section);
 
-    if (deviceID != "32" && deviceID != "16" && deviceID == "61"){
+    if (deviceID != "32" && deviceID != "16" && deviceID == "61") { //if not last cube
       sendMath(section);
     }
   }
-
   //Begin listening for correct neighbours!
 }
 
@@ -255,7 +317,6 @@ void sendID(String ID) {
       sender.sendNEC("0x" + assignedIDCode, 32); //Tell neighbours that final cube has ID
       delay(300);
     }
-
   } else {  //Else broadcast ID
     for (int z = 0; z < 5; z++) {
       Serial.println("SENDING DEVICE ID: " + ID);
@@ -267,9 +328,9 @@ void sendID(String ID) {
 
 //Broadcast equation
 void sendMath(String equation) {
-  String trimmedEquation = equation.substring(0) + equation.substring(1) + equation.substring(2) + equation.substring(3) + equation.substring(4) + equation.substring(5); 
+  String trimmedEquation = equation.substring(0) + equation.substring(1) + equation.substring(2) + equation.substring(3) + equation.substring(4) + equation.substring(5);
   int intEquation = trimmedEquation.toInt();
-  
+
   for (int z = 0; z < 20; z++) {
     Serial.println("SENDING EQUATION: " + trimmedEquation);
     sender.sendNEC("0x" + intEquation, 32);
