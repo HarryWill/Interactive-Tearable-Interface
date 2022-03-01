@@ -1,6 +1,7 @@
 #include <IRremote.h>
 #define RECEIVERS 4
 
+//Supporting screens
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 #define SCREEN_WIDTH 128
@@ -9,6 +10,7 @@
 #define SCREEN_ADDRESS 0x3C
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
+//Initialising IR sender and reciever objects
 IRsend sender;
 IRrecv *irrecvs[RECEIVERS];
 decode_results results;
@@ -55,17 +57,17 @@ void loop() {
   IDCheck();
 }
 
-//Checks recievers for codes
+//Checks IR recievers for codes
 void IDCheck() {
-  if (deviceID == "0") {
+  if (deviceID == "0") {                    //If no ID, broadcast No-ID code
     sender.sendNEC(0x12345678, 32);
     Serial.println("Sent No-ID code");
   }
 
   for (int i = 0; i < 4; i++) {
-    if (assignedID == false && assignedMath == false) {                  //If equation isn't being transmitted         /////////Maybe swap for loops around////////////
-      if (irrecvs[i]->decode(&results)) {
+    if (irrecvs[i]->decode(&results)) {
 
+      if (assignedID == false && assignedMath == false) {        //If device has no ID or equation, attempt to assign ID
         if (i == 0) {
           Serial.print("Up Sensor: ");        //Print sensor direction
           Serial.println(results.value, HEX); //Print result
@@ -84,74 +86,59 @@ void IDCheck() {
         }
         IDarray[i] = results.value; //Add ID to array
         assignIDs(IDarray);
-        irrecvs[i]->enableIRIn();   //Resume checking for IDs
-      }
-    } else if (assignedID == true && assignedMath == true) {
-      if (deviceID == "32" || deviceID == "16" || deviceID == "61") {
-        //delay(5000);                                                          /////////////Delay here to give user time to find solution?////////////
-        for (int i = 0, i < 20; i++) {
-          sender.sendNEC("0x" + partInEquation, 32);
-          delay(300);
-        }
-      } else { //Checks each sensor for correct neighbour
-        if (irrecvs[i]->decode(&results)) {
-          if (partInEquation == 1000) {
-            if (i == 1 && (results.value.toInt()) == (partInEquation + 1000)) {
-              correctRight = true;
-            }
-          } else if (partInEquation == 2000) {
-            if (i == 1 && (results.value.toInt()) == (partInEquation + 1000)) {
-              correctRight = true;
-          } else if (partInEquation == 3000) {
-            if (i == 1 && (results.value.toInt()) == (partInEquation + 1000)) {
-              correctRight = true;
-          } else if (partInEquation == 4000) {
-            if (i == 1 && (results.value.toInt()) == (partInEquation + 1000)) {
-              correctRight = true;
-          } else if (partInEquation == 5000) {
-            if (i == 1 && (results.value.toInt()) == (partInEquation + 1000)) {
-              correctRight = true;
-          } else if (partInEquation == 6000) {
-            if (i == 3 && (results.value).toInt() == (partInEquation - 1000)) {
-              correctRight = true;
-            }
+        irrecvs[i]->enableIRIn();   //Continue checking for IDs
+
+
+      } else if (assignedID == true && assignedMath == true && correctRight == false) {    //If device has ID and equation, broadcast part in equation
+
+        if (partInEquation == 6000) {
+          //delay(5000);                                                    /////////////Delay here to give user time to find solution?////////////
+          for (int i = 0; i < 20; i++) {
+            sender.sendNEC("0x" + partInEquation, 32);
+            delay(300);
+          }
+        } else {
+          String strResult = String(results.value);                        //If not last cube, check for correct neighbour to right
+          if (i == 1 && strResult.toInt() == (partInEquation + 1000)) {
+            correctRight = true;
+          } else if (i == 1 && strResult.toInt() != (partInEquation + 1000)) {
+            correctRight = false;
           }
         }
-      }
-    } else if (assignedID == true && assignedMath == false) {
-      if (irrecvs[i]->decode(&results)) {
+
+      } else if (assignedID == true && assignedMath == false) {           //If device has ID but no equation, check left for equation
         if (i == 3) {
           Serial.print("Equation: ");
           Serial.println(results.value, HEX);
           equationLogic(String(results.value));
         }
-      }
-    }
-    
-    if (correctRight == true){ //////////////////////////////////Must start with cube 2 checking to left I think. Each cubes checks left/////
-      int correctID = 11110000 + (partInEquation);
-      //congrats, correct neighbours!
-      displayText("Correct right! maybe..");
+        
+      } else if (correctRight == true) {           //congrats, correct neighbour to right!
+        int correctCode = 0;
+        displayText("Correct to right!");          //////Continue to display the "section" aswell//////
 
-      if (deviceID == "11"){
-        if (i==3 && (results.value).toInt() == (correctID - 1000)){
-          
-        }
-      }
-      if (deviceID == "21"){
-        for (int i = 0, i < 3; i++) {
-        sender.sendNEC("0x" + correctID , 32);
-        }
-      } else if (deviceID =! "11"){
-        if (i==3 && (results.value).toInt() == (correctID - 1000)){
-          sender.sendNEC("0x" + correctID , 32);
+        //Currently (maybe): cube can decide if right neighbour is correct
+        //Next step: Go left to right, broadcasting correct neighbour ID
+        //Each cube adds one to ID therefore if total recieves correct ID + 5, each cube is in order
+
+        if (partInEquation == 1000){
+          correctCode = 01010001;
+          for (int i = 0; i < 20; i++) {
+            sender.sendNEC("0x" + correctCode, 32);
+            }
+          } else if (i == 3){
+            if (results.value == 01010001){
+              correctCode = (01010001 + 1);
+            } else if (results.value == 01010002){
+              /////////////////////////////REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+            }
         }
       }
     }
   }
 }
 
-//Method which checks incoming codes and assigns an ID
+//Method which uses incoming codes to decide on device ID
 void assignIDs(int IDs[4]) {
   Serial.println("Trying to Assign ID");
 
