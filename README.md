@@ -13,7 +13,6 @@ The "Basic Functionality" folder holds basic classes containing examples of the 
 TODO:
 - Fix issue of U shape arrangement, which device will be device 1?
 - Test sending and recieving with multiple devices
-- CAD housings for 3D printing
 - Limit range of infrared transmitters
 - Sending logic, transmit ID for set time or wait for change in incoming IDs? (potential issues)
 - Prevent incorrect IDs from being saved to array e.g. 0xFFFFFFFF
