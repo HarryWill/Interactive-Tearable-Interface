@@ -1,5 +1,5 @@
 # Welcome!
-<img src="/Images/CompletedCubes.jpg" alt="Picture of my Completed Prototypes">
+<img src="/Images/IMG_20230807_140057.jpg">
 
 This repository contains the code and libraries used in the creation of my final year univeristy prototype.
 
