@@ -10,6 +10,10 @@ The layout of these devices will be entirely changable, effectively altering the
 I'm currently writting a variety of programs to demonstrate the functionality of my prototypes!
 
 The "Basic Functionality" folder holds basic classes containing examples of the various libraries I am using.
+
+# NOTE
+This project is currently on hiatus. Please message me if you have any questions.
+
 TODO:
 - Fix issue of U shape arrangement, which device will be device 1?
 - Test sending and recieving with multiple devices
