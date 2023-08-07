@@ -1,4 +1,6 @@
 # Welcome!
+<img src="/Images/CompletedCubes.jpg" alt="Picture of my Completed Prototypes">
+
 This repository contains the code and libraries used in the creation of my final year univeristy prototype.
 
 I'm currently developing six, interactive devices to study user responses to reconfigurable interfaces.
