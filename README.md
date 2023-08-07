@@ -3,13 +3,13 @@ This repository contains the code and libraries used in the creation of my final
 
 I'm currently developing six, interactive devices to study user responses to reconfigurable interfaces.
 
-Each device features a screen, an Arduino and four infrared recievers and transmitters for communication.
+Each device is powered by an Arduino and features an LCD screen, four infrared recievers and four infrared transmitters.
 
-The layout of these devices will be entirely changable, effectively altering the shape of the combined screen on top.
+The layout of these devices will be changable and they join together using magnets. Changing the arrangement effectively alters the shape of the combined screen on top causing differwnt content to display.
 
 I'm currently writting a variety of programs to demonstrate the functionality of my prototypes!
 
-The "Basic Functionality" folder holds basic classes containing examples of the various libraries I am using.
+If you are looking to undertake a similar project, my "Basic Functionality" folder is a good place to start. It contains examples of using the required libraries for this project.
 
 # Important
 This project is currently on hiatus. Please message me if you have any questions.
