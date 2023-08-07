@@ -15,6 +15,7 @@ If you are looking to undertake a similar project, my "Basic Functionality" fold
 This project is currently on hiatus. Please message me if you have any questions.
 
 # To-Do List
+- Add copy of LCD display library to this repo
 - Fix issue of U shape arrangement, which device will be device 1?
 - Test sending and recieving with multiple devices
 - Limit range of infrared transmitters
